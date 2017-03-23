@@ -6,6 +6,7 @@
 package com.sclerck.bcbill;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +19,8 @@ import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.util.concurrent.AtomicDouble;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.json.JsonObject;
@@ -53,20 +56,33 @@ public class ExchangeVerticle extends AbstractVerticle {
 
 		MarketDataService marketDataService = exchange.getMarketDataService();
 
+		final AtomicDouble lastAsk = new AtomicDouble(0.0);
+		final AtomicDouble lastBid = new AtomicDouble(0.0);
+
 		executor.scheduleAtFixedRate(() -> {
 			try {
 				Ticker ticker = marketDataService.getTicker(CurrencyPair.BTC_USD);
 
-				if (ticker != null && ticker.getAsk() != null && ticker.getAsk().doubleValue() > 0.0
-						&& ticker.getBid() != null && ticker.getBid().doubleValue() > 0.0) {
+				if (ticker != null) {
+					BigDecimal ask = ticker.getAsk();
+					BigDecimal bid = ticker.getBid();
 
-					JsonObject message = new JsonObject();
-					message.put("exchange", friendlyName);
-					message.put("timestamp", Long.toString(System.currentTimeMillis()));
-					message.put("bid", ticker.getBid().doubleValue());
-					message.put("ask", ticker.getAsk().doubleValue());
+					if ((ask != null && ask.doubleValue() != lastAsk.get())
+							|| (bid != null && bid.doubleValue() != lastBid.get())) {
 
-					vertx.eventBus().publish("marketDataUpdate", message);
+						lastAsk.set(ask.doubleValue());
+						lastBid.set(bid.doubleValue());
+
+						JsonObject message = new JsonObject();
+						message.put("exchange", friendlyName);
+						message.put("timestamp", Long.toString(System.currentTimeMillis()));
+						message.put("bid", ticker.getBid().doubleValue());
+						message.put("ask", ticker.getAsk().doubleValue());
+
+						vertx.eventBus().publish("marketDataUpdate", message);
+					}
+				} else {
+					logger.warn("Null ticker for exchange {}", friendlyName);
 				}
 
 			} catch (UnsupportedOperationException e) {

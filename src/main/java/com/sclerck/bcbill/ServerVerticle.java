@@ -18,22 +18,27 @@ import org.knowm.xchange.bitmarket.BitMarketExchange;
 import org.knowm.xchange.bitso.BitsoExchange;
 import org.knowm.xchange.bittrex.v1.BittrexExchange;
 import org.knowm.xchange.bleutrade.BleutradeExchange;
+import org.knowm.xchange.btc38.Btc38Exchange;
 import org.knowm.xchange.btcchina.BTCChinaExchange;
 import org.knowm.xchange.chbtc.ChbtcExchange;
 import org.knowm.xchange.coinmate.CoinmateExchange;
+import org.knowm.xchange.cryptofacilities.CryptoFacilitiesExchange;
 import org.knowm.xchange.empoex.EmpoExExchange;
 import org.knowm.xchange.gatecoin.GatecoinExchange;
 import org.knowm.xchange.gemini.v1.GeminiExchange;
 import org.knowm.xchange.huobi.HuobiExchange;
 import org.knowm.xchange.independentreserve.IndependentReserveExchange;
 import org.knowm.xchange.itbit.v1.ItBitExchange;
+import org.knowm.xchange.jubi.JubiExchange;
 import org.knowm.xchange.lakebtc.LakeBTCExchange;
+import org.knowm.xchange.livecoin.LivecoinExchange;
 import org.knowm.xchange.loyalbit.LoyalbitExchange;
 import org.knowm.xchange.mercadobitcoin.MercadoBitcoinExchange;
 import org.knowm.xchange.poloniex.PoloniexExchange;
 import org.knowm.xchange.quadrigacx.QuadrigaCxExchange;
 import org.knowm.xchange.ripple.RippleExchange;
 import org.knowm.xchange.vaultoro.VaultoroExchange;
+import org.knowm.xchange.yobit.YoBitExchange;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
@@ -90,6 +95,11 @@ public class ServerVerticle extends AbstractVerticle {
 													// connection if too many
 													// requests
 		exchangesToIgnore.add(QuadrigaCxExchange.class); // As Bitso
+		exchangesToIgnore.add(CryptoFacilitiesExchange.class); // Null ticker
+		exchangesToIgnore.add(Btc38Exchange.class); // Null ticker
+		exchangesToIgnore.add(JubiExchange.class); // Null ticker
+		exchangesToIgnore.add(LivecoinExchange.class); // Null ticker
+		exchangesToIgnore.add(YoBitExchange.class); // Null ticker
 	}
 
 	@Override
