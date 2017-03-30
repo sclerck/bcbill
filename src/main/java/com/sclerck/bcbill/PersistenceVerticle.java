@@ -46,7 +46,7 @@ public class PersistenceVerticle extends AbstractVerticle {
 				JsonObject message = (JsonObject) marketDataUpdate.body();
 
 				Document document = new Document();
-				document.put("timestamp", message.getString("timestamp"));
+				document.put("timestamp", message.getLong("timestamp"));
 				document.put("exchange", message.getString("exchange"));
 				document.put("bid", message.getDouble("bid"));
 				document.put("ask", message.getDouble("ask"));
