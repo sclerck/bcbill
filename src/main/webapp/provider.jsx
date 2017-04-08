@@ -1,8 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Grid, Store, applyGridConfig } from 'react-redux-grid';
+import { Grid, applyGridConfig } from 'react-redux-grid';
 
+import Store from './store/store.js';
 import { plugins, columns, stateKey } from './config.js'; 
+import Connect from './components/connect.js';
 
 const config = {
 	columns,
@@ -15,13 +17,17 @@ const config = {
 class BCBill extends React.Component {
 	render() {
 		return (
-			<div className="bcBill">
-				<div className="ticks">
-					<Provider store={ Store } >
+			<Provider store={ Store } >
+				<div className="bcBill">
+		    		<Connect />
+       				<div>
+         				{ this.props.isConnected ? 'Status : connected' : 'Status : disconnected' }
+       				</div>
+					<div className="ticks">
 						<Grid { ...config } />
-					</Provider>
+					</div>
 				</div>
-			</div>
+			</Provider>
 		);
 	}
 }

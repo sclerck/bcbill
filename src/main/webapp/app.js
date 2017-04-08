@@ -1,14 +1,14 @@
 import ReactDOM from 'react-dom';
-import { Store, Actions } from 'react-redux-grid';
-import Provider from './provider.jsx';
+import { Actions } from 'react-redux-grid';
+import BCBill from './provider.jsx';
+import Store from './store/store.js';
 import WSInstance from './websocket.js';
-
+import * as ConnectActions from './actions/ActionsCreators.js';
+import * as ActionTypes from './ActionTypes.js';
 import { columns, stateKey } from './config.js'; 
 
 const render = (id) => {
-    ReactDOM.render(Provider, document.querySelector(id));
-    
-    sock.startWS();
+    ReactDOM.render(BCBill, document.querySelector(id));
 };
 
 document.addEventListener(
@@ -116,7 +116,22 @@ const sock = {
 	}
   },
   wsCloseDispatcher: () => {
-    return console.log("Connection closed");
+    return Store.dispatch(ConnectActions.disconnect());
+  },
+  wsListener: () => {
+
+	const { lastAction } = Store.getState();
+	
+	switch (lastAction.type) {
+	  case ActionTypes.CONNECT:
+	    return sock.startWS();
+	
+	  case ActionTypes.DISCONNECT:
+	    return sock.stopWS();
+	
+	  default:
+	    return;
+	}
   },
   stopWS: () => {
     sock.ws.close();
@@ -128,4 +143,6 @@ const sock = {
     sock.ws = new WSInstance(sock.URL, sock.wsMessageDipatcher, sock.wsCloseDispatcher)
   }
 };
+
+Store.subscribe(() => sock.wsListener());
 
