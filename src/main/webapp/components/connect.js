@@ -31,10 +31,17 @@ class Connect extends React.Component {
 
   render(){
     return (
-      <div style={styles.container}>
-        {
-          this.renderBtn()
-        }
+      <div>
+      	<div style={styles.container}>
+      		{
+      			this.renderBtn()
+      		}
+      	</div>
+      	<div>
+      		{ 
+      			this.props.isConnected ? 'Status : connected' : 'Status : disconnected' 
+      		}
+      	</div>
       </div>
     );
   }

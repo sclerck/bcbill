@@ -20,9 +20,6 @@ class BCBill extends React.Component {
 			<Provider store={ Store } >
 				<div className="bcBill">
 		    		<Connect />
-       				<div>
-         				{ this.props.isConnected ? 'Status : connected' : 'Status : disconnected' }
-       				</div>
 					<div className="ticks">
 						<Grid { ...config } />
 					</div>
